@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TwitterStream</string>
+    <string name="login">Login to Twitter</string>
+</resources>
