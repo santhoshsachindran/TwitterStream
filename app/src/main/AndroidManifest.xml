@@ -11,7 +11,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.TwitterTimeline">
+        <activity android:name=".activity.TwitterTimeline" />
+        <activity android:name=".activity.TwitterLoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -23,16 +29,6 @@
                     android:scheme="x-oauthflow-twitter" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.NoUiActivity"
-            android:theme="@android:style/Theme.NoDisplay">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activity.TwitterLoginActivity" />
     </application>
 
 </manifest>
