@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.santhosh.codepath.twitterstream.R;
 import com.santhosh.codepath.twitterstream.activity.TwitterApplication;
+import com.santhosh.codepath.twitterstream.listener.TweetListener;
 import com.santhosh.codepath.twitterstream.oauth.TwitterRestClient;
 
 import org.json.JSONObject;
@@ -40,6 +41,8 @@ public class PostTweetFragment extends DialogFragment {
     TextView mCharacterCount;
     @BindView(R.id.tweet_button)
     Button mTweetButton;
+
+    TweetListener mTweetListener;
 
     public PostTweetFragment() {
         // Required empty public constructor
@@ -133,14 +136,17 @@ public class PostTweetFragment extends DialogFragment {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers,
                                         JSONObject response) {
-                                    Log.d("Test", "Post success: " + statusCode);
+                                    Log.d("DEBUG", "Post success: " + statusCode);
+                                    if (mTweetListener != null) {
+                                        mTweetListener.newTweet();
+                                    }
                                 }
 
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers,
                                         Throwable throwable,
                                         JSONObject errorResponse) {
-                                    Log.d("Test", "Post Failed: " + statusCode);
+                                    Log.d("DEBUG", "Post Failed: " + statusCode);
                                 }
                             });
                     dismiss();
@@ -149,6 +155,10 @@ public class PostTweetFragment extends DialogFragment {
                 }
             }
         });
+    }
+
+    public void setTweetListener(TweetListener tweetListener) {
+        mTweetListener = tweetListener;
     }
 
     private void quitCompose() {

@@ -4,7 +4,7 @@
     <gradient
         android:angle="270"
         android:endColor="#0098CC"
-        android:startColor="#FFFFFF" />
+        android:startColor="@color/twitter_blue" />
     <stroke
         android:width="5px"
         android:color="#0098CC" />
