@@ -4,17 +4,20 @@ import org.parceler.Parcel;
 
 @Parcel
 public class SingleTweet {
-    private String mCreatedAt;
-    private String mText;
-    private int mRetweetCount;
-    private boolean mRetweeted;
-    private int mFavoriteCount;
-    private boolean mFavorited;
-    private String mUserName;
-    private String mUserHandle;
-    private String mUserProfileImage;
-    private String mMediaUrl;
-    private String mType;
+    String mCreatedAt;
+    String mText;
+    int mRetweetCount;
+    boolean mRetweeted;
+    int mFavoriteCount;
+    boolean mFavorited;
+    String mUserName;
+    String mUserHandle;
+    String mUserProfileImage;
+    String mMediaUrl;
+    String mType;
+
+    public SingleTweet() {
+    }
 
     public SingleTweet(String createdAt, String text, int retweetCount, boolean retweeted,
             int favoriteCount, boolean favorited, String userName, String userHandle,

@@ -160,7 +160,10 @@ public class TimelineFragment extends Fragment implements TweetListener {
                                     favorited, name, handle, profileImage, mediaUrl, type));
                 }
 
-                if (clear) mTweetList.clear();
+                if (clear) {
+                    mTweetList.clear();
+                    mTweetsAdapter.notifyDataSetChanged();
+                }
                 int oldSize = mTweetList.size();
                 mTweetList.addAll(tempList);
                 mTweetsAdapter.notifyItemRangeChanged(oldSize, mTweetList.size() - 1);
