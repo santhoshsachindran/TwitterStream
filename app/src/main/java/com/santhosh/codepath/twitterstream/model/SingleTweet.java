@@ -1,6 +1,8 @@
 package com.santhosh.codepath.twitterstream.model;
 
+import org.parceler.Parcel;
 
+@Parcel
 public class SingleTweet {
     private String mCreatedAt;
     private String mText;
