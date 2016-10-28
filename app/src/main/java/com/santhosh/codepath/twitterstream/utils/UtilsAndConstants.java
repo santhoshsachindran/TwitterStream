@@ -19,4 +19,12 @@ public class UtilsAndConstants {
     public static final String USER_NAME = "name";
     public static final String USER_HANDLE = "screen_name";
     public static final String PROFILE_IMAGE = "profile_image_url";
+    public static final String EXTENDED_ENTITIES = "extended_entities";
+    public static final String MEDIA = "media";
+    public static final String MEDIA_URL = "media_url";
+    public static final String TYPE = "type";
+    public static final String PHOTO = "photo";
+
+    public static final int PLAIN_TWEET = 0;
+    public static final int IMAGE_TWEET = 1;
 }

@@ -1,12 +1,17 @@
 package com.santhosh.codepath.twitterstream.fragment;
 
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.CREATED_AT;
+import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.EXTENDED_ENTITIES;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.FAVORITED;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.FAVORITE_COUNT;
+import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.MEDIA;
+import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.MEDIA_URL;
+import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.PHOTO;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.PROFILE_IMAGE;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.RETWEETED;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.RETWEET_COUNT;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.TWEET_TEXT;
+import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.TYPE;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.USER;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.USER_HANDLE;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.USER_NAME;
@@ -135,9 +140,24 @@ public class TimelineFragment extends Fragment implements TweetListener {
                     String handle = userObject.optString(USER_HANDLE);
                     String profileImage = userObject.optString(PROFILE_IMAGE);
 
+                    String mediaUrl = "";
+                    String type = "";
+                    JSONObject extended = object.optJSONObject(EXTENDED_ENTITIES);
+                    if (extended != null) {
+                        JSONArray media = extended.optJSONArray(MEDIA);
+                        for (int j = 0; j < media.length(); j++) {
+                            JSONObject mediaObject = media.optJSONObject(j);
+                            type = mediaObject.optString(TYPE);
+                            if (type.equals(PHOTO)) {
+                                mediaUrl = mediaObject.optString(MEDIA_URL);
+                                break;
+                            }
+                        }
+                    }
+
                     tempList.add(
                             new SingleTweet(createdAt, text, retweetCount, retweeted, favoriteCount,
-                                    favorited, name, handle, profileImage));
+                                    favorited, name, handle, profileImage, mediaUrl, type));
                 }
 
                 if (clear) mTweetList.clear();

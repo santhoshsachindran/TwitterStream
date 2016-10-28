@@ -11,10 +11,12 @@ public class SingleTweet {
     private String mUserName;
     private String mUserHandle;
     private String mUserProfileImage;
+    private String mMediaUrl;
+    private String mType;
 
     public SingleTweet(String createdAt, String text, int retweetCount, boolean retweeted,
             int favoriteCount, boolean favorited, String userName, String userHandle,
-            String userProfileImage) {
+            String userProfileImage, String mediaUrl, String type) {
         mCreatedAt = createdAt;
         mText = text;
         mRetweetCount = retweetCount;
@@ -24,6 +26,8 @@ public class SingleTweet {
         mUserName = userName;
         mUserHandle = userHandle;
         mUserProfileImage = userProfileImage;
+        mMediaUrl = mediaUrl;
+        mType = type;
     }
 
     public String getCreatedAt() {
@@ -38,16 +42,8 @@ public class SingleTweet {
         return mRetweetCount;
     }
 
-    public boolean getRetweeted() {
-        return mRetweeted;
-    }
-
     public int getFavoriteCount() {
         return mFavoriteCount;
-    }
-
-    public boolean getFavorited() {
-        return mFavorited;
     }
 
     public String getUserName() {
@@ -62,18 +58,19 @@ public class SingleTweet {
         return mUserProfileImage;
     }
 
-    @Override
-    public String toString() {
-        return "SingleTweet{" +
-                "mCreatedAt='" + mCreatedAt + '\'' +
-                ", mText='" + mText + '\'' +
-                ", mRetweetCount=" + mRetweetCount +
-                ", mRetweeted=" + mRetweeted +
-                ", mFavoriteCount=" + mFavoriteCount +
-                ", mFavorited=" + mFavorited +
-                ", mUserName='" + mUserName + '\'' +
-                ", mUserHandle='" + mUserHandle + '\'' +
-                ", mUserProfileImage='" + mUserProfileImage + '\'' +
-                '}';
+    public boolean isRetweeted() {
+        return mRetweeted;
+    }
+
+    public boolean isFavorited() {
+        return mFavorited;
+    }
+
+    public String getMediaUrl() {
+        return mMediaUrl;
+    }
+
+    public String getType() {
+        return mType;
     }
 }
