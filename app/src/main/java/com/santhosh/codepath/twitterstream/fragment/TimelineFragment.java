@@ -4,6 +4,7 @@ import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.CREATE
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.EXTENDED_ENTITIES;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.FAVORITED;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.FAVORITE_COUNT;
+import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.ID;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.MEDIA;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.MEDIA_URL;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.PHOTO;
@@ -17,15 +18,11 @@ import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.USER_H
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.USER_NAME;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,17 +48,14 @@ import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class TimelineFragment extends Fragment implements TweetListener {
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    private static List<SingleTweet> mTweetList = new ArrayList<>();
     @BindView(R.id.timeline_list)
     RecyclerView mTimelineList;
-    @BindView(R.id.fab_compose_tweet)
-    FloatingActionButton mFabComposeTweet;
-
-    private static List<SingleTweet> mTweetList = new ArrayList<>();
     TweetsAdapter mTweetsAdapter;
     @BindView(R.id.swipe_container)
     SwipeRefreshLayout mSwipeContainer;
+
+    private LinearLayoutManager mLinearLayoutManager;
 
     public TimelineFragment() {
         // Required empty public constructor
@@ -75,12 +69,13 @@ public class TimelineFragment extends Fragment implements TweetListener {
         ButterKnife.bind(this, view);
 
         mTweetsAdapter = new TweetsAdapter(mTweetList, getContext());
+        mTweetsAdapter.setTweetListener(this);
         mTimelineList.setAdapter(mTweetsAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mTimelineList.setLayoutManager(linearLayoutManager);
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mTimelineList.setLayoutManager(mLinearLayoutManager);
 
         mTimelineList.addOnScrollListener(
-                new EndlessScrollListener(linearLayoutManager) {
+                new EndlessScrollListener(mLinearLayoutManager) {
                     @Override
                     public void onLoadMore(int page, int totalItemsCount) {
                         fetchTimeLine(false, page);
@@ -88,10 +83,6 @@ public class TimelineFragment extends Fragment implements TweetListener {
                 });
 
         fetchTimeLine(true, 0);
-
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.timeline);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setIcon(R.mipmap.ic_launcher);
 
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -107,20 +98,16 @@ public class TimelineFragment extends Fragment implements TweetListener {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        mFabComposeTweet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
-                PostTweetFragment postTweetFragment = new PostTweetFragment();
-                postTweetFragment.setTweetListener(TimelineFragment.this);
-                postTweetFragment.show(fragmentManager, "tweet_compose");
-            }
-        });
-
         return view;
     }
 
     private void fetchTimeLine(final boolean clear, int page) {
+        Fragment compose = getFragmentManager().findFragmentByTag("tweet_compose");
+
+        if (compose != null && compose.isVisible()) {
+            return;
+        }
+
         TwitterRestClient client = TwitterApplication.getRestClient();
         client.getHomeTimeline(page + 1, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, Header[] headers, JSONArray jsonArray) {
@@ -128,6 +115,7 @@ public class TimelineFragment extends Fragment implements TweetListener {
                 List<SingleTweet> tempList = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject object = jsonArray.optJSONObject(i);
+                    long id = object.optLong(ID);
                     String createdAt = object.optString(CREATED_AT);
                     String text = object.optString(TWEET_TEXT);
                     int retweetCount = object.optInt(RETWEET_COUNT);
@@ -156,8 +144,9 @@ public class TimelineFragment extends Fragment implements TweetListener {
                     }
 
                     tempList.add(
-                            new SingleTweet(createdAt, text, retweetCount, retweeted, favoriteCount,
-                                    favorited, name, handle, profileImage, mediaUrl, type));
+                            new SingleTweet(id, createdAt, text, retweetCount, retweeted,
+                                    favoriteCount, favorited, name, handle, profileImage, mediaUrl,
+                                    type));
                 }
 
                 if (clear) {
@@ -181,7 +170,38 @@ public class TimelineFragment extends Fragment implements TweetListener {
 
     @Override
     public void newTweet() {
-        Snackbar.make(getView(), R.string.tweet_success, Snackbar.LENGTH_LONG).show();
-        fetchTimeLine(true, 0);
+        ((StartProfileViewListener) getActivity()).composeNewTweet();
+    }
+
+    @Override
+    public void startProfileView(String userHandle) {
+        ((StartProfileViewListener) getActivity()).startProfileView(userHandle);
+    }
+
+    @Override
+    public void startReplyTweetCompose(String userHandle) {
+        ((StartProfileViewListener) getActivity()).newReplyTweet(userHandle);
+    }
+
+    @Override
+    public void favoriteTweet(long id, boolean favorite) {
+        ((StartProfileViewListener) getActivity()).favoriteTweet(id, favorite);
+    }
+
+    @Override
+    public void reTweet(long id) {
+        ((StartProfileViewListener) getActivity()).reTweet(id);
+    }
+
+    public interface StartProfileViewListener {
+        void composeNewTweet();
+
+        void startProfileView(String userHandle);
+
+        void newReplyTweet(String userHandle);
+
+        void favoriteTweet(long id, boolean favorite);
+
+        void reTweet(long id);
     }
 }

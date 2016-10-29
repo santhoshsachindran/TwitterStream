@@ -48,10 +48,74 @@
             android:id="@+id/url_image_preview"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_alignParentBottom="true"
             android:layout_below="@+id/tweet_text"
             android:contentDescription="@string/url_thumbnail"
-            android:paddingTop="10dp" />
+            android:paddingTop="10dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/url_image_preview"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/reply"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/reply"
+                android:src="@drawable/tweet_reply" />
+
+            <LinearLayout
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/retweet_image"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:contentDescription="@string/retweet"
+                    android:src="@drawable/tweet_retweet" />
+
+                <TextView
+                    android:id="@+id/retweet_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:paddingStart="@dimen/dimen_5dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/heart_image"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:contentDescription="@string/retweet"
+                    android:src="@drawable/tweet_heart" />
+
+                <TextView
+                    android:id="@+id/heart_count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:paddingStart="@dimen/dimen_5dp" />
+
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

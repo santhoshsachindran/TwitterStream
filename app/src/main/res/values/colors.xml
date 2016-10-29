@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@color/twitter_blue</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">@color/twitter_blue</color>
     <color name="colorAccent">#FF4081</color>
     <color name="twitter_blue">#FF55ACEE</color>
 </resources>

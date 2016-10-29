@@ -1,11 +1,10 @@
 package com.santhosh.codepath.twitterstream.model;
 
 
-import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.IMAGE_TWEET;
 import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.PHOTO;
-import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.PLAIN_TWEET;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -13,66 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.santhosh.codepath.twitterstream.R;
+import com.santhosh.codepath.twitterstream.listener.TweetListener;
+import com.santhosh.codepath.twitterstream.utils.PatternEditableBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.user_profile_image)
-        ImageView mUserProfileImage;
-        @BindView(R.id.user_name)
-        TextView mUserName;
-        @BindView(R.id.user_handle)
-        TextView mUserHandle;
-        @BindView(R.id.time_remaining)
-        TextView mTimeRemaining;
-        @BindView(R.id.tweet_text)
-        TextView mTweetText;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    public static class ViewHolderImage extends RecyclerView.ViewHolder {
-        @BindView(R.id.user_profile_image)
-        ImageView mUserProfileImage;
-        @BindView(R.id.user_name)
-        TextView mUserName;
-        @BindView(R.id.user_handle)
-        TextView mUserHandle;
-        @BindView(R.id.time_remaining)
-        TextView mTimeRemaining;
-        @BindView(R.id.tweet_text)
-        TextView mTweetText;
-        @BindView(R.id.url_image_preview)
-        ImageView mUrlImagePreview;
-
-        public ViewHolderImage(View itemView) {
-            super(itemView);
-
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    private List<SingleTweet> mTweets;
-    private Context mContext;
-
-    public TweetsAdapter(List<SingleTweet> tweets) {
-        mTweets = tweets;
-    }
+    private static List<SingleTweet> mTweets;
+    private static Context mContext;
+    private static TweetListener mTweetListener;
 
     public TweetsAdapter(List<SingleTweet> tweets, Context context) {
         mTweets = tweets;
@@ -80,46 +40,42 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        RecyclerView.ViewHolder viewHolder = null;
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.single_tweet_image, parent,
+                false);
 
-        switch (viewType) {
-            case PLAIN_TWEET:
-                View plainView = inflater.inflate(R.layout.single_tweet, parent, false);
-                viewHolder = new ViewHolder(plainView);
-                break;
-            case IMAGE_TWEET:
-                View imageVIew = inflater.inflate(R.layout.single_tweet_image, parent, false);
-                viewHolder = new ViewHolderImage(imageVIew);
-                break;
-        }
-
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (holder.getItemViewType()) {
-            case PLAIN_TWEET:
-                ViewHolder plainHolder = (ViewHolder) holder;
-                configurePlainViewHolder(plainHolder, position);
-                break;
-            case IMAGE_TWEET:
-                ViewHolderImage imageHolder = (ViewHolderImage) holder;
-                configureImageViewHolder(imageHolder, position);
-                break;
-        }
-    }
-
-    private void configureImageViewHolder(ViewHolderImage holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         SingleTweet singleTweet = mTweets.get(position);
 
         holder.mUserName.setText(singleTweet.getUserName());
         holder.mUserHandle.setText(
-                mContext.getResources().getString(R.string.at_symbol, singleTweet.getUserHandle()));
+                mContext.getResources().getString(R.string.at_symbol, singleTweet.getUserHandle
+                        ()));
         holder.mTweetText.setText(singleTweet.getText());
+        new PatternEditableBuilder().
+                addPattern(Pattern.compile("@(\\w+)"), Color.BLUE,
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                if (mTweetListener != null) {
+                                    if (text.startsWith("@")) {
+                                        mTweetListener.startProfileView(text.substring(1));
+                                    }
+                                }
+                            }
+                        })
+                .addPattern(Pattern.compile("#(\\w+)"), Color.BLUE,
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
+                            }
+                        }).into(holder.mTweetText);
         holder.mTimeRemaining.setText(getRelativeTimeStamp(singleTweet.getCreatedAt()));
 //        Glide.with(holder.mUserProfileImage.getContext())
 //                .load(singleTweet.getUserProfileImage())
@@ -130,41 +86,25 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .placeholder(R.mipmap.ic_launcher)
                 .fit()
                 .into(holder.mUserProfileImage);
-        Picasso.with(holder.mUrlImagePreview.getContext())
-                .load(singleTweet.getMediaUrl())
-                .placeholder(R.mipmap.ic_launcher)
-                .fit()
-                .into(holder.mUrlImagePreview);
-    }
-
-    private void configurePlainViewHolder(ViewHolder holder, int position) {
-        SingleTweet singleTweet = mTweets.get(position);
-
-        holder.mUserName.setText(singleTweet.getUserName());
-        holder.mUserHandle.setText(
-                mContext.getResources().getString(R.string.at_symbol, singleTweet.getUserHandle()));
-        holder.mTweetText.setText(singleTweet.getText());
-        holder.mTimeRemaining.setText(getRelativeTimeStamp(singleTweet.getCreatedAt()));
-//        Glide.with(holder.mUserProfileImage.getContext())
-//                .load(singleTweet.getUserProfileImage())
-//                .placeholder(R.mipmap.ic_launcher)
-//                .into(holder.mUserProfileImage);
-        Picasso.with(holder.mUserProfileImage.getContext())
-                .load(singleTweet.getUserProfileImage())
-                .placeholder(R.mipmap.ic_launcher)
-                .fit()
-                .into(holder.mUserProfileImage);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if ((mTweets.get(position).getMediaUrl() == null || mTweets.get(
-                position).getMediaUrl().isEmpty()) && !mTweets.get(position).getType().equals(
+        if (!(mTweets.get(position).getMediaUrl() == null || mTweets.get(
+                position).getMediaUrl().isEmpty()) && mTweets.get(position).getType().equals(
                 PHOTO)) {
-            return PLAIN_TWEET;
+            holder.mUrlImagePreview.setVisibility(View.VISIBLE);
+            Picasso.with(holder.mUrlImagePreview.getContext())
+                    .load(singleTweet.getMediaUrl())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .fit()
+                    .into(holder.mUrlImagePreview);
         } else {
-            return IMAGE_TWEET;
+            holder.mUrlImagePreview.setVisibility(View.GONE);
         }
+
+        holder.mRetweetImage.setImageResource(
+                singleTweet.isRetweeted() ? R.drawable.tweet_retweet_on : R.drawable.tweet_retweet);
+        holder.mRetweetCount.setText(String.valueOf(singleTweet.getRetweetCount()));
+        holder.mHeartImage.setImageResource(
+                singleTweet.isFavorited() ? R.drawable.tweet_heart_on : R.drawable.tweet_heart);
+        holder.mHeartCount.setText(String.valueOf(singleTweet.getFavoriteCount()));
     }
 
     @Override
@@ -188,6 +128,82 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         String[] splitTime = relativeTime.split(" ");
 
-        return splitTime[0] + splitTime[1].charAt(0);
+        return splitTime.length < 2 ? relativeTime : splitTime[0] + splitTime[1].charAt(0);
+    }
+
+    public void setTweetListener(TweetListener tweetListener) {
+        mTweetListener = tweetListener;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.user_profile_image)
+        ImageView mUserProfileImage;
+        @BindView(R.id.user_name)
+        TextView mUserName;
+        @BindView(R.id.user_handle)
+        TextView mUserHandle;
+        @BindView(R.id.time_remaining)
+        TextView mTimeRemaining;
+        @BindView(R.id.tweet_text)
+        TextView mTweetText;
+        @BindView(R.id.url_image_preview)
+        ImageView mUrlImagePreview;
+        @BindView(R.id.reply)
+        ImageView mReply;
+        @BindView(R.id.retweet_image)
+        ImageView mRetweetImage;
+        @BindView(R.id.retweet_count)
+        TextView mRetweetCount;
+        @BindView(R.id.heart_image)
+        ImageView mHeartImage;
+        @BindView(R.id.heart_count)
+        TextView mHeartCount;
+
+        public ViewHolder(final View itemView) {
+            super(itemView);
+
+            ButterKnife.bind(this, itemView);
+
+            mUserProfileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SingleTweet tweet = mTweets.get(getAdapterPosition());
+                    if (mTweetListener != null) {
+                        mTweetListener.startProfileView(tweet.getUserHandle());
+                    }
+                }
+            });
+
+            mReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SingleTweet tweet = mTweets.get(getAdapterPosition());
+                    if (mTweetListener != null) {
+                        mTweetListener.startReplyTweetCompose(tweet.getUserHandle());
+                    }
+                }
+            });
+
+            mRetweetImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SingleTweet tweet = mTweets.get(getAdapterPosition());
+                    if (mTweetListener != null && !tweet.isRetweeted()) {
+                        mTweetListener.reTweet(tweet.getId());
+                    }
+
+                }
+            });
+
+            mHeartImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SingleTweet tweet = mTweets.get(getAdapterPosition());
+                    if (mTweetListener != null) {
+                        mTweetListener.favoriteTweet(tweet.getId(), tweet.isFavorited());
+                    }
+                }
+            });
+        }
     }
 }

@@ -1,0 +1,200 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <include layout="@layout/toolbar_layout" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/parent_profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ImageView
+            android:id="@+id/banner_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/twitter_blue"
+            android:contentDescription="@string/banner_image"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/banner_image"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/user_profile_image"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/user_image"
+                tools:src="@mipmap/ic_launcher" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/dimen_5dp">
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    tools:text="myName" />
+
+                <ImageView
+                    android:id="@+id/verified"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/user_name"
+                    android:contentDescription="@string/user_verified"
+                    android:paddingStart="@dimen/dimen_10dp" />
+
+                <TextView
+                    android:id="@+id/user_handle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/user_name"
+                    android:paddingTop="@dimen/dimen_5dp"
+                    tools:text="myHandle" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/user_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_info"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/dimen_10dp"
+            tools:text="This is the user description" />
+
+        <LinearLayout
+            android:id="@+id/location_site"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_description"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/dimen_10dp">
+
+            <ImageView
+                android:id="@+id/location_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/location_icon"
+                android:src="@drawable/ic_profile_bio_location"
+                tools:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/location_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/dimen_5dp"
+                tools:text="New york" />
+
+            <ImageView
+                android:id="@+id/link_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/link_icon"
+                android:paddingStart="@dimen/dimen_10dp"
+                android:src="@drawable/ic_profile_bio_link"
+                tools:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/link_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:paddingStart="@dimen/dimen_5dp"
+                tools:text="verge.com" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/follower_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/location_site"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:id="@+id/following_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                tools:text="150" />
+
+            <TextView
+                android:id="@+id/following_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/dimen_5dp"
+                android:text="@string/following"
+                android:textAllCaps="true" />
+
+            <TextView
+                android:id="@+id/followers_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:textStyle="bold"
+                tools:text="150" />
+
+            <TextView
+                android:id="@+id/followers_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/dimen_5dp"
+                android:text="@string/followers"
+                android:textAllCaps="true" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/user_timeline_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/follower_layout"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_compose_tweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_fab_compose"
+        app:backgroundTint="@color/twitter_blue"
+        app:layout_anchor="@id/user_timeline_list"
+        app:layout_anchorGravity="bottom|right|end" />
+</android.support.design.widget.CoordinatorLayout>

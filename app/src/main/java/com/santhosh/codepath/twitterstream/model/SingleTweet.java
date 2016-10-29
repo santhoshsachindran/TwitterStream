@@ -4,6 +4,7 @@ import org.parceler.Parcel;
 
 @Parcel
 public class SingleTweet {
+    long mId;
     String mCreatedAt;
     String mText;
     int mRetweetCount;
@@ -19,9 +20,10 @@ public class SingleTweet {
     public SingleTweet() {
     }
 
-    public SingleTweet(String createdAt, String text, int retweetCount, boolean retweeted,
+    public SingleTweet(long id, String createdAt, String text, int retweetCount, boolean retweeted,
             int favoriteCount, boolean favorited, String userName, String userHandle,
             String userProfileImage, String mediaUrl, String type) {
+        mId = id;
         mCreatedAt = createdAt;
         mText = text;
         mRetweetCount = retweetCount;
@@ -33,6 +35,10 @@ public class SingleTweet {
         mUserProfileImage = userProfileImage;
         mMediaUrl = mediaUrl;
         mType = type;
+    }
+
+    public long getId() {
+        return mId;
     }
 
     public String getCreatedAt() {

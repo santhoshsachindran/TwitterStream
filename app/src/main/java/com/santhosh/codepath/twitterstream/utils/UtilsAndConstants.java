@@ -8,8 +8,11 @@ public class UtilsAndConstants {
     public static final String TWITTER_CALLBACK_URL = "x-oauthflow-twitter://mytwitterfeed";
     public static final String TWITTER_REST_URL = "https://api.twitter.com/1.1";
 
+    public static final String USER_NAME_EXTRA = "user_name";
+
     // JSON Parsing
     public static final String CREATED_AT = "created_at";
+    public static final String ID = "id";
     public static final String TWEET_TEXT = "text";
     public static final String RETWEET_COUNT = "retweet_count";
     public static final String RETWEETED = "retweeted";
@@ -25,6 +28,11 @@ public class UtilsAndConstants {
     public static final String TYPE = "type";
     public static final String PHOTO = "photo";
 
-    public static final int PLAIN_TWEET = 0;
-    public static final int IMAGE_TWEET = 1;
+    public static final String LOCATION = "location";
+    public static final String DESCRIPTION = "description";
+    public static final String URL = "url";
+    public static final String FOLLOWERS_COUNT = "followers_count";
+    public static final String FOLLOWING_COUNT = "friends_count";
+    public static final String PROFILE_BACKGROUND_IMAGE = "profile_background_image_url";
+    public static final String VERIFIED = "verified";
 }

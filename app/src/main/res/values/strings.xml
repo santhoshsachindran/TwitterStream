@@ -15,4 +15,13 @@
     <string name="tweet_success">Posted tweet successfully !</string>
     <string name="twitter_image">Twitter image</string>
     <string name="url_thumbnail">Image from embedded url</string>
+    <string name="banner_image">User banner image</string>
+    <string name="user_verified">Verified user symbol.</string>
+    <string name="location_icon">Location icon</string>
+    <string name="link_icon">Website link icon</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
+    <string name="retweet">Retweet</string>
+    <string name="reply">Reply</string>
+    <string name="profile_image">User profile</string>
 </resources>

@@ -1,9 +1,12 @@
 package com.santhosh.codepath.twitterstream.fragment;
 
+import static com.santhosh.codepath.twitterstream.utils.UtilsAndConstants.USER_NAME_EXTRA;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,9 +46,18 @@ public class PostTweetFragment extends DialogFragment {
     Button mTweetButton;
 
     TweetListener mTweetListener;
+    private String mUserHandle;
 
     public PostTweetFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mUserHandle = getArguments().getString(USER_NAME_EXTRA);
+        }
     }
 
     @Override
@@ -93,6 +105,12 @@ public class PostTweetFragment extends DialogFragment {
                 }
             }
         });
+
+        if (mUserHandle != null && !mUserHandle.isEmpty()) {
+            String toHandle = getString(R.string.at_symbol, mUserHandle + " ");
+            mTweetCompose.setText(toHandle);
+            mTweetCompose.setSelection(toHandle.length());
+        }
 
         mTweetCompose.addTextChangedListener(new TextWatcher() {
             @Override
